@@ -51,9 +51,9 @@ class IOSXCConfigProcessor extends StringProcessor {
 
   void _appendBody(StringBuffer buffer) {
     buffer.writeln();
-    buffer.writeln('FLUTTER_TARGET=lib/main-$_flavorName.dart');
+    buffer.writeln('FLUTTER_TARGET=lib/main.dart');
     buffer.writeln();
-    buffer.writeln('ASSET_PREFIX=$_flavorName');
+    buffer.writeln('ASSET_PREFIX=');
     buffer.writeln('BUNDLE_NAME=$_appName');
   }
 
