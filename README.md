@@ -7,6 +7,10 @@ A flutter utility to easily create flavors in your flutter application
 [![Star on GitHub](https://img.shields.io/github/stars/AngeloAvv/flutter_flavorizr.svg?style=flat&logo=github&colorB=deeppink&label=stars)](https://github.com/AngeloAvv/flutter_flavorizr)
 [![License: MIT](https://img.shields.io/badge/license-MIT-purple.svg)](https://opensource.org/licenses/MIT)
 
+If you want to support this project,
+
+[!["Buy Me A Coffee"](https://www.buymeacoffee.com/assets/img/custom_images/orange_img.png)](https://www.buymeacoffee.com/angeloavv)
+
 ## Getting Started
 
 Let's start by setting up our environment in order to run Flutter
@@ -21,6 +25,7 @@ existing project could throw errors.
 
 Before running Flutter Flavorizr, you must install the following
 software:
+
 * [Ruby](https://www.ruby-lang.org/en/documentation/installation/)
 * [Gem](https://rubygems.org/pages/download)
 * [Xcodeproj](https://github.com/CocoaPods/Xcodeproj) (through RubyGems)
@@ -38,14 +43,14 @@ general, put it under
 [dev_dependencies](https://dart.dev/tools/pub/dependencies#dev-dependencies),
 in your [pubspec.yaml](https://dart.dev/tools/pub/pubspec):
 
-```
+```yaml
 dev_dependencies:
-  flutter_flavorizr: ^2.0.0
+  flutter_flavorizr: ^2.1.3
 ```
 
 You can install packages from the command line:
 
-```
+```terminal
 pub get
 ```
 
@@ -63,7 +68,7 @@ Add a new key named flavorizr and define two sub-items: *app* and
 flavors, in our example *apple* and *banana*. For each flavor you have
 to specify the *app name*, the *applicationId* and the *bundleId*.
 
-```
+```yaml
 flavorizr:
   app:
     android:
@@ -97,10 +102,10 @@ flavorizr:
 
 | key                                     | type   | default                                                                             | required | description                                                                                   |
 |:----------------------------------------|:-------|:------------------------------------------------------------------------------------|:---------|:----------------------------------------------------------------------------------------------|
-| app                                     | Object |                                                                                     | true     | An object describing the general capabilities of an app                                       |
+| app                                     | Object |                                                                                     | false    | An object describing the general capabilities of an app                                       |
 | flavors                                 | Array  |                                                                                     | true     | An array of items. Each of them describes a flavor configuration                              |
 | [instructions](#available-instructions) | Array  |                                                                                     | false    | An array of instructions to customize the flavorizr process                                   |
-| assetsUrl                               | String | https://github.com/AngeloAvv/flutter_flavorizr/releases/download/v2.0.0/assets.zip | false    | A string containing the URL of the zip assets file. The default points to the current release |
+| assetsUrl                               | String | [link](https://github.com/AngeloAvv/flutter_flavorizr/releases/download/v2.1.3/assets.zip) | false    | A string containing the URL of the zip assets file. The default points to the current release |
 | ide                                     | String |                                                                                     | false    | The IDE in which the app is being developed. Currently only `vscode` or `idea`                |
 
 ##### <a href="#available-instructions">Available instructions</a>
@@ -113,6 +118,7 @@ flavorizr:
 | android:buildGradle     | Android       | Adds the flavors to the Android build.gradle file                       |
 | android:androidManifest | Android       | Changes the reference of the app name in the AndroidManifest.xml        |
 | android:dummyAssets     | Android       | Generates some default icons for your custom flavors                    |
+| android:icons           | Android       | Creates a set of icons for each flavor according to the icon directive  |
 | flutter:flavors         | Flutter       | Creates the flutter flavor configuration file                           |
 | flutter:app             | Flutter       | Creates the app.dart entry                                              |
 | flutter:pages           | Flutter       | Creates a set of default pages for the app                              |
@@ -123,6 +129,7 @@ flavorizr:
 | ios:buildTargets        | iOS           | Creates a set of build targets for each flavor and build configuration  |
 | ios:schema              | iOS           | Creates a set of schemas for each flavor                                |
 | ios:dummyAssets         | iOS           | Generates some default icons for your custom flavors                    |
+| ios:icons               | iOS           | Creates a set of icons for each flavor according to the icon directive  |
 | ios:plist               | iOS           | Updates the info.plist file                                             |
 | ios:launchScreen        | iOS           | Creates a set of launchscreens for each flavor                          |
 
@@ -132,7 +139,6 @@ flavorizr:
 |:-----------------|:-------|:--------------|:---------|:-------------------------------------------------------------------|
 | flavorDimensions | String | "flavor-type" | false    | The value of the flavorDimensions in the android build.gradle file |
 
-
 #### ios (under app)
 
 | key           | type       | default | required | description                                                                                    |
@@ -141,9 +147,10 @@ flavorizr:
 
 #### app (under *flavorname*)
 
-| key  | type   | default | required | description         |
-|:-----|:-------|:--------|:---------|:--------------------|
-| name | String |         | true     | The name of the App |
+| key  | type   | default | required | description                   |
+|:-----|:-------|:--------|:---------|:------------------------------|
+| name | String |         | true     | The name of the App           |
+| icon | String |         | false    | The icon path for this flavor |
 
 #### android (under *flavorname*)
 
@@ -151,7 +158,10 @@ flavorizr:
 |:--------------------|:-------|:--------|:---------|:-------------------------------------------------------------------|
 | applicationId       | String |         | true     | The applicationId of the Android App                               |
 | firebase            | Object |         | false    | An object which contains a Firebase configuration                  |
+| resValues           | Array  |         | false    | An array which contains a set of resValues configurations          |
+| customConfig        | Array  |         | false    | An array which contains a set of custom configs, *overrides defaultConfig*          |
 | generateDummyAssets | bool   | true    | false    | True if you want to generate dummy assets (icon set, strings, etc) |
+| icon                | String |         | false    | The icon path for this android flavor                              |
 
 #### ios (under *flavorname*)
 
@@ -160,7 +170,9 @@ flavorizr:
 | bundleId            | String     |         | true     | The bundleId of the iOS App                                                                                   |
 | buildSettings       | Dictionary | {}      | false    | A flavor-specific XCode build configuration dictionary [XCode Build Settings](https://xcodebuildsettings.com) |
 | firebase            | Object     |         | false    | An object which contains a Firebase configuration                                                             |
+| variables           | Array      |         | false    | An array which contains a set of variables configurations                                                     |
 | generateDummyAssets | bool       | true    | false    | True if you want to generate dummy assets (xcassets, etc)                                                     |
+| icon                | String     |         | false    | The icon path for this iOS flavor                                                                             |
 
 #### firebase
 
@@ -168,22 +180,126 @@ flavorizr:
 |:-------|:-------|:--------|:---------|:--------------------------------------------------------------------------------------------------------------------|
 | config | String |         | false    | The path to the Firebase configuration file (google-services.json for Android and GoogleService-Info.plist for iOS) |
 
+#### resValue (for Android)
+
+| key   | type   | default | required | description                                                                                                                              |
+|:------|:-------|:--------|:---------|:-----------------------------------------------------------------------------------------------------------------------------------------|
+| type  | String |         | true     | The type of the [resValue](https://developer.android.com/reference/tools/gradle-api/7.0/com/android/build/api/variant/ResValue) variable |
+| value | String |         | true     | The value of the resValue variable                                                                                                       |
+
+```yaml
+flavorizr:
+  app:
+    android:
+      flavorDimensions: "flavor-type"
+    ios:
+
+  flavors:
+    apple:
+      app:
+        name: "Apple App"
+
+      android:
+        applicationId: "com.example.apple"
+        resValues:
+          variable_one:
+            type: "string"
+            value: "example variable one"
+          variable_two:
+            type: "string"
+            value: "example variable two"
+
+      ios:
+        bundleId: "com.example.apple"
+```
+
+#### variable (for iOS)
+
+| key    | type   | default | required | description                                                                                                                                                                                                                                          |
+|:-------|:-------|:--------|:---------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| target | String |         | false    | The type of the [target](https://medium.com/geekculture/what-are-debug-and-release-modes-in-xcode-how-to-check-app-is-running-in-debug-mode-8dadad6a3428) (debug, release, profile). Do not specify a target if you want to apply it to all of them. |
+| value  | String |         | true     | The value of the variable                                                                                                                                                                                                                            |
+
+```yaml
+flavorizr:
+  app:
+    android:
+      flavorDimensions: "flavor-type"
+    ios:
+
+  flavors:
+    apple:
+      app:
+        name: "Apple App"
+
+      android:
+        applicationId: "com.example.apple"
+
+      ios:
+        bundleId: "com.example.apple"
+        variables:
+          VARIABLE_ONE:
+            value: "variable1"
+          VARIABLE_TWO:
+            target: "Debug"
+            value: "variable2"        
+```
+#### customConfig (for Android only)
+
+You can define any custom property for android
+```yml
+flavorizr:
+  app:
+    android:
+      flavorDimensions: "flavor-type"
+    ios:
+
+  flavors:
+    apple:
+      app:
+        name: "Apple App"
+
+      android:
+        applicationId: "com.example.apple"
+        customConfig:
+            versionNameSuffix: "\"-green-prod\"" # Don't forget to escape strings with \"
+            signingConfig: flavorSigning.green
+            versionCode: 1000
+            minSdkVersion: 23
+            # ..... and any custom property want you do
+```
+
+This .yml part, generate this custom android flavor:
+
+```groovy
+apple {
+  dimension "flavor-type"
+  applicationId "com.example.apple"
+  versionNameSuffix "-green-prod"
+  signingConfig flavorSigning.green
+  versionCode 1000
+  minSdkVersion 23
+}
+```
+
+
 ## Usage
 
 When you finished defining the flavorizr configuration, you can proceed by running the script with:
 
-```
+```terminal
 flutter pub run flutter_flavorizr
 ```
 
 You can also run flutter_flavorizr with a custom set of processors by appending the -p (or --processors) param followed by the processor names separated by comma:
 
-```
+```terminal
 flutter pub run flutter_flavorizr -p <processor_1>,<processor_2>
 ```
+
 Example
 
-```
+```terminal
 flutter pub run flutter_flavorizr -p assets:download
 flutter pub run flutter_flavorizr -p assets:download,assets:extract
 ```
@@ -192,25 +308,27 @@ flutter pub run flutter_flavorizr -p assets:download,assets:extract
 
 Once the process has generated the flavors, you can run them by typing
 
-```
-flutter run --flavor <flavorName> -t lib/main-<flavorName>.dart
+```terminal
+flutter run --flavor <flavorName> -t lib/main_<flavorName>.dart
 ```
 
 Example
 
-```
-flutter run --flavor apple -t lib/main-apple.dart
-flutter run --flavor banana -t lib/main-banana.dart
+```terminal
+flutter run --flavor apple -t lib/main_apple.dart
+flutter run --flavor banana -t lib/main_banana.dart
 ```
 
 ### Default processors set
 
 By default, when you do not specify a custom set of processors by appending the -p (or --processors) param, a default processors set will be used:
+
 * assets:download
 * assets:extract
 * android:androidManifest
 * android:buildGradle
 * android:dummyAssets
+* android:icons
 * flutter:flavors
 * flutter:app
 * flutter:pages
@@ -219,6 +337,7 @@ By default, when you do not specify a custom set of processors by appending the 
 * ios:buildTargets
 * ios:schema
 * ios:dummyAssets
+* ios:icons
 * ios:plist
 * ios:launchScreen
 * google:firebase
@@ -231,7 +350,7 @@ Flutter_flavorizr creates different dart files in the lib folder. In the
 flavors.dart file we have the F class which contains all of our
 customizations.
 
-```
+```dart
 class F {
   static Flavor? appFlavor;
 
@@ -261,12 +380,15 @@ my_home_page.dart file, the page shown after the launch of the app, we
 can see a clear reference on the title getter defined in the F class.
 
 ## Side notes
+
 I haven't found yet a good groovy parser to guarantee the idempotency of the AndroidBuildGradleProcessor.  
 The only way to keep track of the autogenerated flavorDimensions is to mark up the beginning and the end of the section with magic comments.  
 Please do not erase these comments otherwise you will break down the AndroidBuildGradleProcessor.
 
 ## Third party services
+
 ### Google Firebase
+
 In order to flavorize your project and enable Firebase in your flavor  
 you have to define a firebase object below each OS flavor. Under the  
 firebase object you must define the config path of the google-services.json  
@@ -274,7 +396,8 @@ firebase object you must define the config path of the google-services.json
 (if you are under iOS configuration).
 
 As you can see in the example below, we added the path accordingly
-```
+
+```yaml
 flavorizr:
   app:
     android:
@@ -309,6 +432,11 @@ flavorizr:
         firebase:
           config: ".firebase/banana/GoogleService-Info.plist"
 ```
+
+## Docs & Tutorials (from the community)
+[Easily build flavors in Flutter (Android and iOS) with flutter_flavorizr](https://angeloavv.medium.com/easily-build-flavors-in-flutter-android-and-ios-with-flutter-flavorizr-d48cbf956e4) - Angelo Cassano
+
+[Get the best out of Flutter flavors with flutter_flavorizr](https://pierre-dev.hashnode.dev/get-the-best-out-of-flutter-flavors-with-flutterflavorizr) - Pierre Monier
 
 ## Further developments
 

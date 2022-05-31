@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,17 +23,30 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'dart:collection';
+
+import 'package:flutter_flavorizr/extensions/extensions_map.dart';
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
+import 'package:flutter_flavorizr/parser/models/flavors/flavor.dart';
+import 'package:flutter_flavorizr/parser/models/flavors/ios/enums.dart';
+import 'package:flutter_flavorizr/parser/models/flavors/ios/variable.dart';
 import 'package:flutter_flavorizr/processors/commons/string_processor.dart';
 
 class IOSXCConfigProcessor extends StringProcessor {
-  final String _appName;
   final String _flavorName;
+  final Flavor _flavor;
+  final Target? _target;
 
   IOSXCConfigProcessor(
-    this._appName,
-    this._flavorName, {
+    this._flavorName,
+    this._flavor,
+    this._target, {
     String? input,
-  }) : super(input: input);
+    required Flavorizr config,
+  }) : super(
+          input: input,
+          config: config,
+        );
 
   @override
   String execute() {
@@ -50,7 +63,22 @@ class IOSXCConfigProcessor extends StringProcessor {
   }
 
   void _appendBody(StringBuffer buffer) {
+    final Map<String, Variable> variables = LinkedHashMap.from({
+      'FLUTTER_TARGET': Variable(value: 'lib/main_$_flavorName.dart'),
+      'ASSET_PREFIX': Variable(value: _flavorName),
+      'BUNDLE_NAME': Variable(value: _flavor.app.name),
+    })
+      ..addAll(
+        _flavor.ios.variables.where((_, variable) =>
+            variable.target == null || variable.target == _target),
+      );
+
     buffer.writeln();
+
+    variables.forEach((key, variable) {
+      buffer.writeln('$key=${variable.value}');
+    });
+    
     buffer.writeln('FLUTTER_TARGET=lib/main.dart');
     buffer.writeln();
     buffer.writeln('ASSET_PREFIX=');

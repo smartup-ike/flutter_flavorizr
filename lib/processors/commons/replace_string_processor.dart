@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,14 +23,22 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/string_processor.dart';
 
 class ReplaceStringProcessor extends StringProcessor {
   final Pattern _find;
   final String _replace;
 
-  ReplaceStringProcessor(this._find, this._replace, {String? input})
-      : super(input: input);
+  ReplaceStringProcessor(
+    this._find,
+    this._replace, {
+    String? input,
+    required Flavorizr config,
+  }) : super(
+          input: input,
+          config: config,
+        );
 
   @override
   String execute() {

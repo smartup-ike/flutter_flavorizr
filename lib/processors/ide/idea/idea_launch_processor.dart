@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,6 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/string_processor.dart';
 import 'package:xml/xml.dart';
 
@@ -32,7 +33,11 @@ class IdeaLaunchProcessor extends StringProcessor {
   IdeaLaunchProcessor(
     this._flavorName, {
     String? input,
-  }) : super(input: input);
+    required Flavorizr config,
+  }) : super(
+          input: input,
+          config: config,
+        );
 
   @override
   String toString() => 'IdeaLaunchProcessor';
@@ -45,18 +50,18 @@ class IdeaLaunchProcessor extends StringProcessor {
         attributes: {'name': 'ProjectRunConfigurationManager'}, nest: () {
       builder.element('configuration', attributes: {
         'default': 'false',
-        'name': 'main-$_flavorName.dart',
+        'name': 'main_$_flavorName.dart',
         'type': 'FlutterRunConfigurationType',
         'factoryName': 'Flutter',
       }, nest: () {
         builder.element('option', attributes: {
           'name': 'buildFlavor',
-          'value': '$_flavorName',
+          'value': _flavorName,
         });
 
         builder.element('option', attributes: {
           'name': 'filePath',
-          'value': '\$PROJECT_DIR\$/lib/main-$_flavorName.dart',
+          'value': '\$PROJECT_DIR\$/lib/main_$_flavorName.dart',
         });
 
         builder.element('method', attributes: {

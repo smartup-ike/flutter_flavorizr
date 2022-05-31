@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,13 +25,18 @@
 
 import 'dart:io';
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/abstract_processor.dart';
 
 class QueueProcessor extends AbstractProcessor {
   Iterable<AbstractProcessor> processors;
 
-  QueueProcessor(this.processors);
+  QueueProcessor(
+    this.processors, {
+    required Flavorizr config,
+  }) : super(config);
 
+  @override
   void execute() {
     for (AbstractProcessor processor in processors) {
       stdout.writeln("Running $processor");

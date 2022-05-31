@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,6 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/abstract_processor.dart';
 import 'package:io/io.dart';
 
@@ -30,7 +31,11 @@ class CopyFolderProcessor extends AbstractProcessor<void> {
   final String _source;
   final String _destination;
 
-  CopyFolderProcessor(this._source, this._destination);
+  CopyFolderProcessor(
+    this._source,
+    this._destination, {
+    required Flavorizr config,
+  }) : super(config);
 
   @override
   void execute() => copyPathSync(_source, _destination);

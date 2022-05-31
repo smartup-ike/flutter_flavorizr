@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,13 +23,18 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/parser/models/flavors/flavor.dart';
 import 'package:flutter_flavorizr/processors/commons/string_processor.dart';
 
 class FlutterFlavorsProcessor extends StringProcessor {
-  Map<String, Flavor> _flavors;
-
-  FlutterFlavorsProcessor(this._flavors, {String? input}) : super(input: input);
+  FlutterFlavorsProcessor({
+    String? input,
+    required Flavorizr config,
+  }) : super(
+          input: input,
+          config: config,
+        );
 
   @override
   String execute() {
@@ -44,9 +49,9 @@ class FlutterFlavorsProcessor extends StringProcessor {
   void _appendFlavorEnum(StringBuffer buffer) {
     buffer.writeln('enum Flavor {');
 
-    _flavors.keys.forEach((String flavorName) {
+    for (var flavorName in config.flavors.keys) {
       buffer.writeln('  ${flavorName.toUpperCase()},');
-    });
+    }
 
     buffer.writeln('}');
   }
@@ -57,10 +62,13 @@ class FlutterFlavorsProcessor extends StringProcessor {
     buffer.writeln('  static Flavor? appFlavor;');
     buffer.writeln();
 
+    buffer.writeln('  static String get name => appFlavor?.name ?? \'\';');
+    buffer.writeln();
+
     buffer.writeln('  static String get title {');
     buffer.writeln('    switch (appFlavor) {');
 
-    _flavors.forEach((String name, Flavor flavor) {
+    config.flavors.forEach((String name, Flavor flavor) {
       buffer.writeln('      case Flavor.${name.toUpperCase()}:');
       buffer.writeln('        return \'${flavor.app.name}\';');
     });

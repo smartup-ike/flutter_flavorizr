@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -32,7 +32,8 @@ import 'package:flutter_flavorizr/processors/processor.dart';
 
 void execute(List<String> args) {
   ArgParser argParser = ArgParser();
-  argParser.addMultiOption('processors', abbr: 'p', allowed: Processor.defaultInstructionSet, splitCommas: true);
+  argParser.addMultiOption('processors',
+      abbr: 'p', allowed: Processor.defaultInstructionSet, splitCommas: true);
   ArgResults results = argParser.parse(args);
   List<String> argProcessors = results['processors'];
 

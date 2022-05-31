@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,23 +23,32 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:collection/collection.dart';
 import 'package:flutter_flavorizr/exception/malformed_resource_exception.dart';
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/string_processor.dart';
 import 'package:xml/xml.dart';
-import 'package:collection/collection.dart';
 
 class IOSPListProcessor extends StringProcessor {
-  IOSPListProcessor({String? input}) : super(input: input);
+  IOSPListProcessor({
+    String? input,
+    required Flavorizr config,
+  }) : super(
+          input: input,
+          config: config,
+        );
 
   @override
   String execute() {
-    XmlDocument document = XmlDocument.parse(this.input!);
-    XmlElement root = (document.rootElement.children
-        .where((XmlNode node) => node is XmlElement)
-        .first) as XmlElement;
+    XmlDocument document = XmlDocument.parse(input!);
+    XmlElement root =
+        (document.rootElement.children.whereType<XmlElement>().first);
 
     _updateCFBundleName(root);
-    _updateUILaunchStoryboardName(root);
+
+    if ((config.instructions ?? []).contains("ios:launchScreen")) {
+      _updateUILaunchStoryboardName(root);
+    }
 
     return document.toXmlString(pretty: true);
   }
@@ -63,8 +72,7 @@ class IOSPListProcessor extends StringProcessor {
       throw MalformedResourceException(input!);
     }
 
-    XmlNode? element =
-        keys.firstWhereOrNull((XmlNode e) => e.text == key);
+    XmlNode? element = keys.firstWhereOrNull((XmlNode e) => e.text == key);
     if (element == null) {
       throw MalformedResourceException(input!);
     }

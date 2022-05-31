@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,7 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import 'package:flutter_flavorizr/parser/models/flavors/flavor.dart';
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/queue_processor.dart';
 import 'package:flutter_flavorizr/processors/ios/xcconfig/ios_xcconfig_file_processor.dart';
 
@@ -32,20 +32,27 @@ class IOSXCConfigTargetsFileProcessor extends QueueProcessor {
     String process,
     String script,
     String project,
-    String path,
-    Map<String, Flavor> flavors,
-  ) : super(flavors
-            .map((String flavorName, Flavor flavor) => MapEntry(
-                flavorName,
-                IOSXCConfigFileProcessor(
-                  process,
-                  script,
-                  project,
-                  path,
-                  flavor.app.name,
+    String path, {
+    required Flavorizr config,
+  }) : super(
+          config.flavors
+              .map(
+                (flavorName, flavor) => MapEntry(
                   flavorName,
-                )))
-            .values);
+                  IOSXCConfigFileProcessor(
+                    process,
+                    script,
+                    project,
+                    path,
+                    flavorName,
+                    flavor,
+                    config: config,
+                  ),
+                ),
+              )
+              .values,
+          config: config,
+        );
 
   @override
   String toString() => 'IOSXCConfigTargetsFileProcessor';

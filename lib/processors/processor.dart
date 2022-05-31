@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -29,6 +29,7 @@ import 'package:flutter_flavorizr/parser/models/pubspec.dart';
 import 'package:flutter_flavorizr/processors/android/android_build_gradle_processor.dart';
 import 'package:flutter_flavorizr/processors/android/android_dummy_assets_processor.dart';
 import 'package:flutter_flavorizr/processors/android/android_manifest_processor.dart';
+import 'package:flutter_flavorizr/processors/android/icons/android_icons_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/abstract_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/copy_file_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/copy_folder_processor.dart';
@@ -44,6 +45,7 @@ import 'package:flutter_flavorizr/processors/google/firebase/firebase_processor.
 import 'package:flutter_flavorizr/processors/ide/ide_processor.dart';
 import 'package:flutter_flavorizr/processors/ios/build_configuration/ios_build_configurations_targets_processor.dart';
 import 'package:flutter_flavorizr/processors/ios/dummy_assets/ios_dummy_assets_targets_processor.dart';
+import 'package:flutter_flavorizr/processors/ios/icons/ios_icons_processor.dart';
 import 'package:flutter_flavorizr/processors/ios/ios_plist_processor.dart';
 import 'package:flutter_flavorizr/processors/ios/ios_schemas_processor.dart';
 import 'package:flutter_flavorizr/processors/ios/launch_screen/ios_targets_launchscreen_file_processor.dart';
@@ -63,6 +65,7 @@ class Processor extends AbstractProcessor<void> {
     'android:androidManifest',
     'android:buildGradle',
     'android:dummyAssets',
+    'android:icons',
 
     // Flutter
     'flutter:flavors',
@@ -75,6 +78,7 @@ class Processor extends AbstractProcessor<void> {
     'ios:buildTargets',
     'ios:schema',
     'ios:dummyAssets',
+    'ios:icons',
     'ios:plist',
     'ios:launchScreen',
 
@@ -88,7 +92,9 @@ class Processor extends AbstractProcessor<void> {
     'ide:config'
   ];
 
-  Processor(this._pubspec) : _availableProcessors = _initAvailableProcessors(_pubspec);
+  Processor(this._pubspec)
+      : _availableProcessors = _initAvailableProcessors(_pubspec),
+        super(_pubspec.flavorizr);
 
   @override
   void execute() async {
@@ -109,54 +115,75 @@ class Processor extends AbstractProcessor<void> {
     }
   }
 
-  static Map<String, AbstractProcessor<void>> _initAvailableProcessors(Pubspec pubspec) {
+  static Map<String, AbstractProcessor<void>> _initAvailableProcessors(
+      Pubspec pubspec) {
     return {
       // Commons
       'assets:download': DownloadFileProcessor(
-        pubspec.flavorizr.assetsUrl,
         K.assetsZipPath,
+        config: pubspec.flavorizr,
       ),
       'assets:extract': UnzipFileProcessor(
         K.assetsZipPath,
         K.tempPath,
+        config: pubspec.flavorizr,
       ),
-      'assets:clean': QueueProcessor([
-        DeleteFileProcessor(K.assetsZipPath),
-        DeleteFileProcessor(K.tempPath),
-      ]),
+      'assets:clean': QueueProcessor(
+        [
+          DeleteFileProcessor(
+            K.assetsZipPath,
+            config: pubspec.flavorizr,
+          ),
+          DeleteFileProcessor(
+            K.tempPath,
+            config: pubspec.flavorizr,
+          ),
+        ],
+        config: pubspec.flavorizr,
+      ),
 
       // Android
       'android:androidManifest': ExistingFileStringProcessor(
         K.androidManifestPath,
-        AndroidManifestProcessor(),
+        AndroidManifestProcessor(config: pubspec.flavorizr),
+        config: pubspec.flavorizr,
       ),
       'android:buildGradle': ExistingFileStringProcessor(
         K.androidBuildGradlePath,
-        AndroidBuildGradleProcessor(pubspec.flavorizr),
+        AndroidBuildGradleProcessor(
+          config: pubspec.flavorizr,
+        ),
+        config: pubspec.flavorizr,
       ),
       'android:dummyAssets': AndroidDummyAssetsProcessor(
         K.tempAndroidResPath,
         K.androidSrcPath,
-        pubspec.flavorizr.flavors,
+        config: pubspec.flavorizr,
+      ),
+      'android:icons': AndroidIconsProcessor(
+        config: pubspec.flavorizr,
       ),
 
       //Flutter
       'flutter:flavors': NewFileStringProcessor(
         K.flutterFlavorPath,
-        FlutterFlavorsProcessor(pubspec.flavorizr.flavors),
+        FlutterFlavorsProcessor(config: pubspec.flavorizr),
+        config: pubspec.flavorizr,
       ),
       'flutter:app': CopyFileProcessor(
         K.tempFlutterAppPath,
         K.flutterAppPath,
+        config: pubspec.flavorizr,
       ),
       'flutter:pages': CopyFolderProcessor(
         K.tempFlutterPagesPath,
         K.flutterPagesPath,
+        config: pubspec.flavorizr,
       ),
       'flutter:targets': FlutterTargetsFileProcessor(
         K.tempFlutterMainPath,
         K.flutterPath,
-        pubspec.flavorizr.flavors.keys,
+        config: pubspec.flavorizr,
       ),
 
       //iOS
@@ -165,29 +192,33 @@ class Processor extends AbstractProcessor<void> {
         K.tempiOSAddFileScriptPath,
         K.iOSRunnerProjectPath,
         K.iOSFlutterPath,
-        pubspec.flavorizr.flavors,
+        config: pubspec.flavorizr,
       ),
       'ios:buildTargets': IOSBuildConfigurationsTargetsProcessor(
         'ruby',
         K.tempiOSAddBuildConfigurationScriptPath,
         K.iOSRunnerProjectPath,
         K.iOSFlutterPath,
-        pubspec.flavorizr,
+        config: pubspec.flavorizr,
       ),
       'ios:schema': IOSSchemasProcessor(
         'ruby',
         K.tempiOSCreateSchemeScriptPath,
         K.iOSRunnerProjectPath,
-        pubspec.flavorizr.flavors.keys,
+        config: pubspec.flavorizr,
       ),
       'ios:dummyAssets': IOSDummyAssetsTargetsProcessor(
         K.tempiOSAssetsPath,
         K.iOSAssetsPath,
-        pubspec.flavorizr.flavors,
+        config: pubspec.flavorizr,
+      ),
+      'ios:icons': IOSIconsProcessor(
+        config: pubspec.flavorizr,
       ),
       'ios:plist': ExistingFileStringProcessor(
         K.iOSPListPath,
-        IOSPListProcessor(),
+        IOSPListProcessor(config: pubspec.flavorizr),
+        config: pubspec.flavorizr,
       ),
       'ios:launchScreen': IOSTargetsLaunchScreenFileProcessor(
         'ruby',
@@ -195,7 +226,7 @@ class Processor extends AbstractProcessor<void> {
         K.iOSRunnerProjectPath,
         K.tempiOSLaunchScreenPath,
         K.iOSRunnerPath,
-        pubspec.flavorizr.flavors.keys,
+        config: pubspec.flavorizr,
       ),
 
       // Google
@@ -207,13 +238,12 @@ class Processor extends AbstractProcessor<void> {
         runnerProject: K.iOSRunnerProjectPath,
         firebaseScript: K.tempiOSAddFirebaseBuildPhaseScriptPath,
         generatedFirebaseScriptPath: K.tempiOSFirebaseScriptPath,
-        flavors: pubspec.flavorizr.flavors,
+        config: pubspec.flavorizr,
       ),
 
       // IDE
       'ide:config': IDEProcessor(
-        ide: pubspec.flavorizr.ide,
-        flavors: pubspec.flavorizr.flavors.keys,
+        config: pubspec.flavorizr,
       ),
     };
   }

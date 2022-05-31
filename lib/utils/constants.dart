@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -28,6 +28,9 @@ class K {
 
   static String androidSrcPath = '$androidAppPath/src';
 
+  static String androidIconPath =
+      '$androidAppPath/src/%s/res/%s/ic_launcher.png';
+
   static String androidManifestPath =
       '$androidSrcPath/main/AndroidManifest.xml';
 
@@ -55,6 +58,9 @@ class K {
 
   static String iOSAssetsPath = '$iOSRunnerPath/Assets.xcassets';
 
+  static String iOSAppIconPath =
+      '$iOSRunnerPath/Assets.xcassets/%sAppIcon.appiconset/%s';
+
   static String assetsZipPath = 'assets.tmp.zip';
 
   static String tempPath = '.tmp';
@@ -67,7 +73,7 @@ class K {
 
   static String tempFlutterAppPath = '$tempFlutterPath/app.dart';
 
-  static String tempFlutterMainPath = '$tempFlutterPath/main-target.dart';
+  static String tempFlutterMainPath = '$tempFlutterPath/main_target.dart';
 
   static String tempFlutterPagesPath = '$tempFlutterPath/pages';
 
@@ -78,8 +84,7 @@ class K {
   static String tempiOSLaunchScreenPath =
       '$tempiOSPath/LaunchScreen.storyboard';
 
-  static String tempiOSFirebaseScriptPath =
-      '$tempiOSPath/firebaseScript.sh';
+  static String tempiOSFirebaseScriptPath = '$tempiOSPath/firebaseScript.sh';
 
   static String tempScriptsPath = '$tempPath/scripts';
 
@@ -90,7 +95,8 @@ class K {
 
   static String tempiOSAddFileScriptPath = '$tempiOSScriptsPath/add_file.rb';
 
-  static String tempiOSAddFirebaseBuildPhaseScriptPath = '$tempiOSScriptsPath/add_firebase_build_phase.rb';
+  static String tempiOSAddFirebaseBuildPhaseScriptPath =
+      '$tempiOSScriptsPath/add_firebase_build_phase.rb';
 
   static String tempiOSAddBuildConfigurationScriptPath =
       '$tempiOSScriptsPath/add_build_configuration.rb';

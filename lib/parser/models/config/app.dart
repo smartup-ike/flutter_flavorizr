@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -32,13 +32,12 @@ part 'app.g.dart';
 
 @JsonSerializable(anyMap: true, createToJson: false)
 class App {
-  @JsonKey(required: true, disallowNullValue: true)
-  final Android android;
+  final Android? android;
 
   final IOS? ios;
 
   App({
-    required this.android,
+    this.android,
     this.ios,
   });
 

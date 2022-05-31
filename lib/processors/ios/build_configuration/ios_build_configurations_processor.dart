@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,13 +25,14 @@
 
 import 'dart:convert';
 
+import 'package:flutter_flavorizr/extensions/extensions_string.dart';
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
+import 'package:flutter_flavorizr/parser/models/flavors/ios/enums.dart';
 import 'package:flutter_flavorizr/processors/commons/queue_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/shell_processor.dart';
-import 'package:flutter_flavorizr/utils/ios_utils.dart' as IOSUtils;
+import 'package:flutter_flavorizr/utils/ios_utils.dart' as ios_utils;
 
 class IOSBuildConfigurationsProcessor extends QueueProcessor {
-  static const List<String> _modes = ['Debug', 'Profile', 'Release'];
-
   IOSBuildConfigurationsProcessor(
     String process,
     String script,
@@ -39,22 +40,26 @@ class IOSBuildConfigurationsProcessor extends QueueProcessor {
     String file,
     String flavorName,
     String bundleId,
-    Map<String, dynamic> buildConfigurations,
-  ) : super(
-          _modes.map(
-            (String mode) => ShellProcessor(
+    Map<String, dynamic> buildConfigurations, {
+    required Flavorizr config,
+  }) : super(
+          Target.values.map(
+            (target) => ShellProcessor(
               process,
               [
                 script,
                 project,
-                IOSUtils.flatPath('$file/$flavorName$mode.xcconfig'),
+                ios_utils.flatPath(
+                    '$file/$flavorName${target.name.capitalize}.xcconfig'),
                 flavorName,
                 bundleId,
-                mode,
+                target.name.capitalize,
                 base64.encode(utf8.encode(jsonEncode(buildConfigurations))),
               ],
+              config: config,
             ),
           ),
+          config: config,
         );
 
   @override

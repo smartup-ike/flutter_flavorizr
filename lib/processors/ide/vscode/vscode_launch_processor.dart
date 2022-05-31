@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,32 +23,34 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/extensions/extensions_string.dart';
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
+import 'package:flutter_flavorizr/parser/models/flavors/ios/enums.dart';
 import 'package:flutter_flavorizr/processors/commons/string_processor.dart';
 import 'package:flutter_flavorizr/processors/ide/vscode/models/configuration.dart';
 import 'package:flutter_flavorizr/processors/ide/vscode/models/launch.dart';
 
 class VSCodeLaunchProcessor extends StringProcessor {
-  final Iterable<String> _flavorNames;
-  static const List<String> modes = ['Debug', 'Profile', 'Release'];
-
-  VSCodeLaunchProcessor(this._flavorNames);
+  VSCodeLaunchProcessor({
+    required Flavorizr config,
+  }) : super(config: config);
 
   @override
   execute() => Launch(
         version: '0.2.0',
-        configurations: _flavorNames
+        configurations: config.flavors.keys
             .expand(
-              (flavorName) => modes.map(
-                (mode) => Configuration(
-                  name: '$flavorName $mode',
-                  flutterMode: mode.toLowerCase(),
+              (flavorName) => Target.values.map(
+                (target) => Configuration(
+                  name: '$flavorName ${target.name.capitalize}',
+                  flutterMode: target.name.toLowerCase(),
                   request: 'launch',
                   type: 'dart',
                   args: [
                     '--flavor',
                     flavorName,
                   ],
-                  program: 'lib/main-$flavorName.dart',
+                  program: 'lib/main_$flavorName.dart',
                 ),
               ),
             )

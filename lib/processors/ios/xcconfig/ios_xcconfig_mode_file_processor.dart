@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,38 +23,52 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/extensions/extensions_string.dart';
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
+import 'package:flutter_flavorizr/parser/models/flavors/flavor.dart';
+import 'package:flutter_flavorizr/parser/models/flavors/ios/enums.dart';
 import 'package:flutter_flavorizr/processors/commons/new_file_string_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/queue_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/shell_processor.dart';
 import 'package:flutter_flavorizr/processors/ios/xcconfig/ios_xcconfig_processor.dart';
-import 'package:flutter_flavorizr/utils/ios_utils.dart' as IOSUtils;
+import 'package:flutter_flavorizr/utils/ios_utils.dart' as ios_utils;
 
 class IOSXCConfigModeFileProcessor extends QueueProcessor {
   IOSXCConfigModeFileProcessor(
     String process,
     String script,
     String project,
-    String file,
-    String appName,
+    String path,
     String flavorName,
-  ) : super([
-          NewFileStringProcessor(
-            file,
-            IOSXCConfigProcessor(
-              appName,
-              flavorName,
+    Flavor flavor,
+    Target target, {
+    required Flavorizr config,
+  }) : super(
+          [
+            NewFileStringProcessor(
+              '$path/$flavorName${target.name.capitalize}.xcconfig',
+              IOSXCConfigProcessor(
+                flavorName,
+                flavor,
+                target,
+                config: config,
+              ),
+              config: config,
             ),
-          ),
-          ShellProcessor(
-            process,
-            [
-              script,
-              project,
-              IOSUtils.flatPath(file),
-              'Flutter',
-            ],
-          ),
-        ]);
+            ShellProcessor(
+              process,
+              [
+                script,
+                project,
+                ios_utils.flatPath(
+                    '$path/$flavorName${target.name.capitalize}.xcconfig'),
+                'Flutter',
+              ],
+              config: config,
+            ),
+          ],
+          config: config,
+        );
 
   @override
   String toString() => 'IOSXCConfigModeFileProcessor';

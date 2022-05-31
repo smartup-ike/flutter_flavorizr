@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,6 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/abstract_file_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/string_processor.dart';
 
@@ -31,13 +32,14 @@ abstract class AbstractFileStringProcessor extends AbstractFileProcessor {
 
   AbstractFileStringProcessor(
     String path,
-    this.processor,
-  ) : super(path);
+    this.processor, {
+    required Flavorizr config,
+  }) : super(path, config: config);
 
   @override
   void execute() {
     String result = processor.execute();
-    this.file.writeAsStringSync(result);
+    file.writeAsStringSync(result);
   }
 
   @override

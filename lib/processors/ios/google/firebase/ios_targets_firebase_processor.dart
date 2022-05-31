@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,6 +23,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/extensions/extensions_map.dart';
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/parser/models/flavors/flavor.dart';
 import 'package:flutter_flavorizr/processors/commons/empty_file_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/new_file_string_processor.dart';
@@ -30,7 +32,7 @@ import 'package:flutter_flavorizr/processors/commons/queue_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/shell_processor.dart';
 import 'package:flutter_flavorizr/processors/ios/google/firebase/ios_firebase_processor.dart';
 import 'package:flutter_flavorizr/processors/ios/google/firebase/ios_firebase_script_processor.dart';
-import 'package:flutter_flavorizr/utils/ios_utils.dart' as IOSUtils;
+import 'package:flutter_flavorizr/utils/ios_utils.dart' as ios_utils;
 
 class IOSTargetsFirebaseProcessor extends QueueProcessor {
   IOSTargetsFirebaseProcessor({
@@ -40,46 +42,58 @@ class IOSTargetsFirebaseProcessor extends QueueProcessor {
     required String runnerProject,
     required String firebaseScript,
     required String generatedFirebaseScriptPath,
-    required Map<String, Flavor> flavors,
-  }) : super([
-          ...flavors
-              .map(
-                (flavorName, flavor) => MapEntry(
-                  flavorName,
-                  IOSFirebaseProcessor(
-                    flavor.ios.firebase!.config,
-                    destination,
+    required Flavorizr config,
+  }) : super(
+          [
+            ..._filteredFlavors(config)
+                .map(
+                  (flavorName, flavor) => MapEntry(
                     flavorName,
+                    IOSFirebaseProcessor(
+                      flavor.ios.firebase!.config,
+                      destination,
+                      flavorName,
+                      config: config,
+                    ),
                   ),
-                ),
-              )
-              .values,
-          NewFileStringProcessor(
-            '$destination/GoogleService-Info.plist',
-            EmptyFileProcessor(),
-          ),
-          ShellProcessor(
-            process,
-            [
-              addFileScript,
-              runnerProject,
-              IOSUtils.flatPath('$destination/GoogleService-Info.plist'),
-            ],
-          ),
-          NewFileStringProcessor(
-            generatedFirebaseScriptPath,
-            IOSFirebaseScriptProcessor(flavors.keys),
-          ),
-          ShellProcessor(
-            process,
-            [
-              firebaseScript,
-              runnerProject,
+                )
+                .values,
+            NewFileStringProcessor(
+              '$destination/GoogleService-Info.plist',
+              EmptyFileProcessor(config: config),
+              config: config,
+            ),
+            ShellProcessor(
+              process,
+              [
+                addFileScript,
+                runnerProject,
+                ios_utils.flatPath('$destination/GoogleService-Info.plist'),
+              ],
+              config: config,
+            ),
+            NewFileStringProcessor(
               generatedFirebaseScriptPath,
-            ],
-          ),
-        ]);
+              IOSFirebaseScriptProcessor(config: config),
+              config: config,
+            ),
+            ShellProcessor(
+              process,
+              [
+                firebaseScript,
+                runnerProject,
+                generatedFirebaseScriptPath,
+              ],
+              config: config,
+            ),
+          ],
+          config: config,
+        );
 
   @override
   String toString() => 'IOSTargetsFirebaseProcessor';
+
+  static Map<String, Flavor> _filteredFlavors(Flavorizr config) =>
+      config.flavors
+          .where((flavorName, flavor) => flavor.android.firebase != null);
 }

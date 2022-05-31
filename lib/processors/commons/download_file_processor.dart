@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,20 +25,28 @@
 
 import 'dart:io';
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/abstract_file_processor.dart';
 
 class DownloadFileProcessor extends AbstractFileProcessor {
   final String _url;
 
-  DownloadFileProcessor(this._url, String path) : super(path);
+  DownloadFileProcessor(
+    String path, {
+    required Flavorizr config,
+  })  : _url = config.assetsUrl,
+        super(
+          path,
+          config: config,
+        );
 
   @override
   void execute() async {
-    HttpClient client = new HttpClient();
+    HttpClient client = HttpClient();
 
     HttpClientRequest request = await client.getUrl(Uri.parse(_url));
     HttpClientResponse response = await request.close();
-    await response.pipe(this.file.openWrite());
+    await response.pipe(file.openWrite());
   }
 
   @override

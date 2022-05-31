@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -33,8 +33,7 @@ part 'flavorizr.g.dart';
 
 @JsonSerializable(anyMap: true, createToJson: false)
 class Flavorizr {
-  @JsonKey(required: true)
-  final App app;
+  final App? app;
 
   @JsonKey(required: true)
   final Map<String, Flavor> flavors;
@@ -44,14 +43,14 @@ class Flavorizr {
 
   @JsonKey(
       defaultValue:
-          'https://github.com/AngeloAvv/flutter_flavorizr/releases/download/v2.0.0/assets.zip')
+          'https://github.com/AngeloAvv/flutter_flavorizr/releases/download/v2.1.3/assets.zip')
   final String assetsUrl;
 
   @JsonKey()
   final IDE? ide;
 
   Flavorizr({
-    required this.app,
+    this.app,
     required this.flavors,
     this.instructions,
     required this.assetsUrl,

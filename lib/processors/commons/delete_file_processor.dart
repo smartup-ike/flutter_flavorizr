@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,12 +23,19 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/abstract_file_processor.dart';
 
 class DeleteFileProcessor extends AbstractFileProcessor {
   final String _source;
 
-  DeleteFileProcessor(this._source) : super(_source);
+  DeleteFileProcessor(
+    this._source, {
+    required Flavorizr config,
+  }) : super(
+          _source,
+          config: config,
+        );
 
   @override
   void execute() => file.deleteSync(recursive: true);

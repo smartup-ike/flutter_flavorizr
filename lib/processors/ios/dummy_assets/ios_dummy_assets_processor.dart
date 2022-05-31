@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,25 +23,35 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/parser/models/flavors/ios.dart';
 import 'package:flutter_flavorizr/processors/commons/dummy_assets_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/queue_processor.dart';
 
 class IOSDummyAssetsProcessor extends QueueProcessor {
   IOSDummyAssetsProcessor(
-      String source, String destination, String flavorName, IOS os)
-      : super([
-          DummyAssetsProcessor(
-            '$source/AppIcon.appiconset',
-            '$destination/${flavorName}AppIcon.appiconset',
-            os,
-          ),
-          DummyAssetsProcessor(
-            '$source/LaunchImage.imageset',
-            '$destination/${flavorName}LaunchImage.imageset',
-            os,
-          ),
-        ]);
+    String source,
+    String destination,
+    String flavorName,
+    IOS os, {
+    required Flavorizr config,
+  }) : super(
+          [
+            DummyAssetsProcessor(
+              '$source/AppIcon.appiconset',
+              '$destination/${flavorName}AppIcon.appiconset',
+              os,
+              config: config,
+            ),
+            DummyAssetsProcessor(
+              '$source/LaunchImage.imageset',
+              '$destination/${flavorName}LaunchImage.imageset',
+              os,
+              config: config,
+            ),
+          ],
+          config: config,
+        );
 
   @override
   String toString() => 'IOSDummyAssetsProcessor';

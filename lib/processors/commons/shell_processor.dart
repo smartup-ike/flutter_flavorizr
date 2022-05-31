@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,6 +25,7 @@
 
 import 'dart:io';
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/abstract_processor.dart';
 
 class ShellProcessor extends AbstractProcessor<void> {
@@ -36,14 +37,20 @@ class ShellProcessor extends AbstractProcessor<void> {
     this._path,
     this._args, {
     this.workingDirectory,
-  });
+    required Flavorizr config,
+  }) : super(config);
 
   @override
-  void execute() => Process.runSync(
-        _path,
-        _args,
-        workingDirectory: workingDirectory,
-      );
+  void execute() {
+    ProcessResult result = Process.runSync(
+      _path,
+      _args,
+      workingDirectory: workingDirectory,
+    );
+    if (result.exitCode != 0) {
+      print(result.stderr);
+    }
+  }
 
   @override
   String toString() =>

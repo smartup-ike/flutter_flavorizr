@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,6 +23,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/copy_file_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/new_folder_processor.dart';
 import 'package:flutter_flavorizr/processors/commons/queue_processor.dart';
@@ -31,12 +32,22 @@ class IOSFirebaseProcessor extends QueueProcessor {
   IOSFirebaseProcessor(
     String source,
     String destination,
-    String flavorName,
-  ) : super([
-          NewFolderProcessor('$destination/$flavorName'),
-          CopyFileProcessor(
-              source, '$destination/$flavorName/GoogleService-Info.plist'),
-        ]);
+    String flavorName, {
+    required Flavorizr config,
+  }) : super(
+          [
+            NewFolderProcessor(
+              '$destination/$flavorName',
+              config: config,
+            ),
+            CopyFileProcessor(
+              source,
+              '$destination/$flavorName/GoogleService-Info.plist',
+              config: config,
+            ),
+          ],
+          config: config,
+        );
 
   @override
   String toString() => 'IOSFirebaseProcessor';

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -23,30 +23,35 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
+import 'package:flutter_flavorizr/parser/models/flavors/flavor.dart';
+import 'package:flutter_flavorizr/parser/models/flavors/ios/enums.dart';
 import 'package:flutter_flavorizr/processors/commons/queue_processor.dart';
 import 'package:flutter_flavorizr/processors/ios/xcconfig/ios_xcconfig_mode_file_processor.dart';
 
 class IOSXCConfigFileProcessor extends QueueProcessor {
-  static const List<String> _modes = ['Debug', 'Release'];
-
   IOSXCConfigFileProcessor(
     String process,
     String script,
     String project,
     String path,
-    String appName,
     String flavorName,
-  ) : super(
-          _modes.map(
-            (String mode) => IOSXCConfigModeFileProcessor(
+    Flavor flavor, {
+    required Flavorizr config,
+  }) : super(
+          Target.values.map(
+            (target) => IOSXCConfigModeFileProcessor(
               process,
               script,
               project,
-              '$path/$flavorName$mode.xcconfig',
-              appName,
+              path,
               flavorName,
+              flavor,
+              target,
+              config: config,
             ),
           ),
+          config: config,
         );
 
   @override

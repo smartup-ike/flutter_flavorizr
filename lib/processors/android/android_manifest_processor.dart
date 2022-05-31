@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,15 +25,22 @@
 
 import 'package:collection/collection.dart';
 import 'package:flutter_flavorizr/exception/malformed_resource_exception.dart';
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/string_processor.dart';
 import 'package:xml/xml.dart';
 
 class AndroidManifestProcessor extends StringProcessor {
-  AndroidManifestProcessor({String? input}) : super(input: input);
+  AndroidManifestProcessor({
+    String? input,
+    required Flavorizr config,
+  }) : super(
+          input: input,
+          config: config,
+        );
 
   @override
   String execute() {
-    XmlDocument document = XmlDocument.parse(this.input!);
+    XmlDocument document = XmlDocument.parse(input!);
 
     Iterable<XmlElement> applications = document.findAllElements('application');
     if (applications.isEmpty) {

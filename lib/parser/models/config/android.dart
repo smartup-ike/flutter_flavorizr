@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -24,14 +24,17 @@
  */
 
 import 'package:json_annotation/json_annotation.dart';
+
 part 'android.g.dart';
 
 @JsonSerializable(anyMap: true, createToJson: false)
 class Android {
+  static const kFlavorDimensionValue = 'flavor-type';
+
   @JsonKey(defaultValue: 'flavor-type')
   final String flavorDimensions;
 
-  Android({this.flavorDimensions = 'flavor-type'});
+  const Android({this.flavorDimensions = kFlavorDimensionValue});
 
   factory Android.fromJson(Map<String, dynamic> json) =>
       _$AndroidFromJson(json);

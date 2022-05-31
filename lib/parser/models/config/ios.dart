@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,6 +25,7 @@
 
 import 'package:flutter_flavorizr/parser/mixins/build_settings_mixin.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'ios.g.dart';
 
 @JsonSerializable(anyMap: true, createToJson: false)

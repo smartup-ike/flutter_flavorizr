@@ -1,3 +1,26 @@
+## 2.1.3
+* Added Android custom properties/config to flavors
+* Relaxed first app entry checks
+* New naming conventions for flutter_lints
+* New README section: Docs and Tutorials
+* Bumped dependencies
+
+## 2.1.2
+* Added resValues directive to declare resValues in build.gradle for each flavor (Android)
+* Added variables directive to declare variables in xcconfig for each flavor (iOS)
+* Bumped dependencies
+
+## 2.1.1
+* Added icon directive to generate icons for each flavor
+* Bumped dependencies
+
+## 2.1.0
+* Added flavor banner in the top-left corner
+* Disabled override of the launchScreen attribute in Info.plist if its processor is not specified
+* Removed blank line generation at the end of the build.gradle file on every run
+* Code refactoring
+* Bumped dependencies
+
 ## 2.0.0
 * Migration to Flutter 2
 

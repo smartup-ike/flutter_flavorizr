@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021 MyLittleSuite
+ * Copyright (c) 2022 MyLittleSuite
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -25,17 +25,27 @@
 
 import 'dart:io';
 
+import 'package:flutter_flavorizr/parser/models/flavorizr.dart';
 import 'package:flutter_flavorizr/processors/commons/abstract_file_processor.dart';
 
 class CopyFileProcessor extends AbstractFileProcessor {
   final String _destination;
+
   final String _source;
 
-  CopyFileProcessor(this._source, this._destination) : super(_source);
+  CopyFileProcessor(
+    this._source,
+    this._destination, {
+    required Flavorizr config,
+  }) : super(_source, config: config);
 
   @override
   File execute() => file.copySync(_destination);
 
   @override
   String toString() => 'Copying file from $_source to $_destination';
+
+  String get destination => _destination;
+
+  String get source => _source;
 }
